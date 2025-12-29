@@ -1,0 +1,19 @@
+# Use the GCP base image with password-only SSH authentication
+FROM us-west1-docker.pkg.dev/proximal-core-0/environments/base:latest
+
+# From .node-version of the repository
+ENV NODE_VERSION="22.14.0"
+
+RUN . "$NVM_DIR/nvm.sh" && \
+    nvm install ${NODE_VERSION} && \
+    nvm alias default ${NODE_VERSION} && \
+    nvm use ${NODE_VERSION} && \
+    echo 'nvm use ${NODE_VERSION}' >> /root/.bashrc && \
+    echo "✅ Node.js $(node --version) active" && \
+    \
+    npm install -g pnpm@9.15.9 && \
+    echo "✅ pnpm installed"
+
+# Set Node.js PATH permanently for all subsequent commands
+ENV NVM_DIR="/root/.nvm"
+ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin:${PATH}"
